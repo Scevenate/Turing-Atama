@@ -1,48 +1,52 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Group, Panel, Separator } from "react-resizable-panels";
-import { LEVELS } from "@/levels/index.ts";
-import { useMachineStore } from "@/store/machine.ts";
-import { Controls } from "@/components/Control/index.tsx";
-import { TmEditor } from "@/components/Editor/index.tsx";
-import { TuringTape } from "@/components/Turing/index.tsx";
-import { ProblemPanel } from "@/components/Problem/index.tsx";
-import { Feedback } from "@/components/Feedback/index.tsx";
+import { levels, type Level } from "@/levels/levels.ts";
+import { useControlStore } from "@/store/control.ts";
+import { useSourceStore } from "@/store/source.ts";
+import { useLevelsStore } from "@/store/level.ts";
+import { Controls } from "@/components/Control/Control";
+import { TmEditor } from "@/components/Editor/Editor";
+import { TuringTape } from "@/components/Turing/Turing";
+import { ProblemPanel } from "@/components/Problem/Problem";
+import { Feedback } from "@/components/Feedback/Feedback";
 import { ArrowLeft } from "lucide-react";
 
 export default function GameRoute() {
+  //  Update id to level, navigate away if level is not found
   const { id } = useParams<{ id: string }>();
+  const [level, setLevel] = useState<Level | null>(null);
   const navigate = useNavigate();
-  const loadLevel = useMachineStore((s) => s.loadLevel);
-  const compileSrc = useMachineStore((s) => s.compileSrc);
-  const run = useMachineStore((s) => s.run);
-  const pause = useMachineStore((s) => s.pause);
-  const stepFn = useMachineStore((s) => s.step);
-  const reset = useMachineStore((s) => s.reset);
-
   useEffect(() => {
-    const level = LEVELS.find((l) => l.id === id);
-    if (level) {
-      loadLevel(level);
+    const l = levels.flatMap((g) => g.levels).find((l) => l.id === Number(id)) ?? null;
+    setLevel(l);
+    if (!l) { navigate("/"); return; }
+  }, [id]);
+
+  //  load level, restore source
+  const loadLevel = useControlStore((s) => s.loadLevel);
+  const levelEntries = useLevelsStore((s) => s.levelEntries);
+  useEffect(() => {
+    if (!level) return;
+    loadLevel(level);
+    // Restore level source storage
+    const saved = levelEntries.get(level.id);
+    if (saved) setSource(saved.source);
+  }, [level]);
+
+  //  Save source on write
+  const source = useSourceStore((s) => s.source);
+  const setSource = useSourceStore((s) => s.setSource);
+  const setLevelEntry = useLevelsStore((s) => s.setLevelEntry);
+  useEffect(() => {
+    if (!level) return;
+    const levelEntry = levelEntries.get(level.id);
+    if (levelEntry) {
+      setLevelEntry(level.id, { ...levelEntry, source: source });
     } else {
-      navigate("/");
+      setLevelEntry(level.id, { state: "attempted", source: source });
     }
-  }, [id, loadLevel, navigate]);
-
-  // Global keyboard shortcuts
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      if (ctrl && e.key === "Enter") { e.preventDefault(); compileSrc(); }
-      if (ctrl && e.key === " ") { e.preventDefault(); run(); }
-      if (e.key === "F5") { e.preventDefault(); run(); }
-      if (e.key === "Escape") { e.preventDefault(); pause(); }
-      if (ctrl && e.key === "ArrowRight") { e.preventDefault(); stepFn(); }
-      if (ctrl && e.key === "r") { e.preventDefault(); reset(); }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [compileSrc, run, pause, stepFn, reset]);
+  }, [source]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[var(--color-bg)]">
@@ -56,7 +60,7 @@ export default function GameRoute() {
           Levels
         </button>
         <div className="flex-1 min-w-0">
-          <Controls />
+          <Controls/>
         </div>
       </div>
 

@@ -1,77 +1,115 @@
 import { describe, it, expect } from "vitest";
-import { compile } from "../core/compiler.ts";
+import { compile } from "@/lib/compiler.ts";
 
 describe("compile", () => {
   it("parses a minimal rule without direction", () => {
-    const { rules, errors } = compile("start, 1: halt, 1");
-    expect(errors).toHaveLength(0);
-    expect(rules).toHaveLength(1);
-    expect(rules[0]).toMatchObject({
+    const result = compile("start, 1: halt, 1,");
+    expect(result).toEqual([
+      {
+      state: "start",
+      character: "1",
+      nextState: "halt", 
+      nextCharacter: "1",
+      line: 1,
+    }]);
+  });
+
+  it("parses a rule with right direction", () => {
+    const result = compile("start, null: start, null, >");
+    expect(result).toEqual([
+        {
+          state: "start",
+          character: "null",
+          nextState: "start",
+          nextCharacter: "null",
+          move: ">",
+          line: 1,
+        }
+      ]);
+  });
+
+  it("parses a rule with left direction", () => {
+    const result = compile("start, null: halt, null, <");
+    expect(result).toEqual([
+      {
+        state: "start",
+        character: "null",
+        nextState: "halt",
+        nextCharacter: "null",
+        move: "<",
+        line: 1,
+      },
+    ]);
+  });
+
+  it("ignores comment lines", () => {
+    const result = compile("# this is a comment\nstart, 1: halt, 1,");
+    expect(result).toEqual([
+      {
       state: "start",
       character: "1",
       nextState: "halt",
       nextCharacter: "1",
-      move: undefined,
-    });
-  });
-
-  it("parses a rule with right direction", () => {
-    const { rules, errors } = compile("start, null: start, null, >");
-    expect(errors).toHaveLength(0);
-    expect(rules[0].move).toBe(">");
-  });
-
-  it("parses a rule with left direction", () => {
-    const { rules, errors } = compile("start, null: halt, null, <");
-    expect(errors).toHaveLength(0);
-    expect(rules[0].move).toBe("<");
-  });
-
-  it("ignores comment lines", () => {
-    const { rules, errors } = compile("# this is a comment\nstart, 1: halt, 1");
-    expect(errors).toHaveLength(0);
-    expect(rules).toHaveLength(1);
+      line: 2,
+    }]);
   });
 
   it("ignores inline comments", () => {
-    const { rules, errors } = compile("start, 1: halt, 1 # inline");
-    expect(errors).toHaveLength(0);
-    expect(rules).toHaveLength(1);
+    const result = compile("start, 1: halt, 1, # inline");
+    expect(result).toEqual([
+      {
+      state: "start",
+      character: "1",
+      nextState: "halt",
+      nextCharacter: "1",
+      line: 1,
+    }]);
   });
 
   it("ignores empty lines", () => {
-    const { rules, errors } = compile("\n\n  \nstart, 1: halt, 1\n\n");
-    expect(errors).toHaveLength(0);
-    expect(rules).toHaveLength(1);
+    const result = compile("\n\n  \nstart, 1: halt, 1,\n\n");
+    expect(result).toEqual([
+      {
+      state: "start",
+      character: "1",
+      nextState: "halt",
+      nextCharacter: "1",
+      line: 4,
+    }]);
   });
 
   it("parses multiple rules", () => {
     const src = [
       "start, 0: write1, 1, >",
-      "write1, null: halt, null",
+      "write1, null: halt, null,",
     ].join("\n");
-    const { rules, errors } = compile(src);
-    expect(errors).toHaveLength(0);
-    expect(rules).toHaveLength(2);
+    const result = compile(src);
+    expect(result).toEqual([
+      {
+      state: "start",
+      character: "0",
+      nextState: "write1",
+      nextCharacter: "1",
+      move: ">",
+      line: 1,
+    },
+    {
+      state: "write1",
+      character: "null",
+      nextState: "halt",
+      nextCharacter: "null",
+      line: 2,
+      },
+    ]);
+  });
+
+  it("error on dead rule", () => {
+    const result = compile("start, 1: ,,\nstart, 2: halt, 2, <");
+    expect(result).toHaveProperty("name", "Dead rule");
   });
 
   it("returns error for unexpected character", () => {
-    const { errors } = compile("start, 1: halt, @");
-    expect(errors).toHaveLength(1);
-    expect(errors[0].severity).toBe("error");
-    expect(errors[0].message).toMatch(/unexpected character/i);
-  });
-
-  it("returns error for incomplete rule", () => {
-    const { errors } = compile("start, 1: halt");
-    expect(errors).toHaveLength(1);
-    expect(errors[0].severity).toBe("error");
-  });
-
-  it("continues parsing after an error on one line", () => {
-    const src = "start, @: halt, 1\nstart, 1: halt, 1";
-    const { rules, errors } = compile(src);
-    expect(errors).toHaveLength(1);
-    expect(rules).toHaveLength(1);
+    const result = compile("start, 1: halt, @");
+    expect(result).toHaveProperty("name", "Invalid character");
   });
 });

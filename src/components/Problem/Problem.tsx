@@ -2,10 +2,10 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useMachineStore } from "@/store/machine.ts";
+import { useControlStore } from "@/store/control.ts";
 
 export function ProblemPanel() {
-  const level = useMachineStore((s) => s.level);
+  const level = useControlStore((s) => s.level);
   const [collapsed, setCollapsed] = useState(false);
 
   if (!level) {

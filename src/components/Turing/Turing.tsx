@@ -1,17 +1,29 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useControlStore } from "@/store/control.ts";
 import { useMachineStore } from "@/store/machine.ts";
+import type { OkResult, HaltResult } from "@/lib/types";
 
 const VISIBLE_CELLS = 17; // must be odd
 const HALF = Math.floor(VISIBLE_CELLS / 2);
 const CELL_WIDTH = 52;
 
 export function TuringTape() {
-  const tape = useMachineStore((s) => s.tape);
-  const status = useMachineStore((s) => s.status);
-  const stepCount = useMachineStore((s) => s.stepCount);
-  const lastAppliedRule = useMachineStore((s) => s.lastAppliedRule);
+  const controlState = useControlStore((s) => s.state);
+  const stepCount = useControlStore((s) => s.stepCount);
+  const lastResult = useControlStore((s) => s.lastResult);
+  const machine = useMachineStore((s) => s.machine);
 
-  if (!tape) {
+  const isHalted = controlState === "stopped" && lastResult?.result === "halt";
+  const isPanic = controlState === "stopped" && lastResult?.result === "panic";
+  const isRunning = controlState === "running";
+  const isInitial = controlState === "initial";
+
+  const lastAppliedRule =
+    lastResult?.result === "ok" || lastResult?.result === "halt"
+      ? (lastResult as OkResult | HaltResult).appliedRule
+      : null;
+
+  if (isInitial) {
     return (
       <div className="flex items-center justify-center h-full text-[var(--color-text-muted)] text-sm">
         Load a level to begin.
@@ -19,8 +31,13 @@ export function TuringTape() {
     );
   }
 
-  const head = tape.head;
+  const head = machine.head;
   const positions = Array.from({ length: VISIBLE_CELLS }, (_, i) => head - HALF + i);
+
+  const showRule =
+    lastAppliedRule !== null &&
+    controlState !== "editing" &&
+    controlState !== "compiled";
 
   return (
     <div className="flex flex-col items-center justify-center h-full gap-6 select-none">
@@ -28,18 +45,18 @@ export function TuringTape() {
       <div className="flex items-center gap-3">
         <span className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider">State</span>
         <motion.div
-          key={tape.state}
+          key={machine.state}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className={`px-4 py-1 rounded font-mono font-bold text-sm border ${
-            tape.state === "halt"
+            machine.state === "halt"
               ? "border-[var(--color-success)] text-[var(--color-success)]"
-              : tape.state === "start"
+              : machine.state === "start"
               ? "border-[var(--color-accent)] text-[var(--color-accent)]"
               : "border-[var(--color-head)] text-[var(--color-head)]"
           }`}
         >
-          {tape.state}
+          {machine.state}
         </motion.div>
         {stepCount > 0 && (
           <span className="text-xs text-[var(--color-text-muted)]">
@@ -64,10 +81,10 @@ export function TuringTape() {
         >
           <AnimatePresence initial={false} mode="popLayout">
             {positions.map((pos) => {
-              const char = tape.cells.get(pos) ?? "null";
+              const char = machine.tape.get(pos) ?? "null";
               const isHead = pos === head;
               const wasWritten =
-                isHead && lastAppliedRule !== null && status !== "editing";
+                isHead && lastAppliedRule !== null && controlState !== "editing";
 
               return (
                 <motion.div
@@ -112,7 +129,7 @@ export function TuringTape() {
 
         {/* Status banner under tape */}
         <div className="mt-3 h-6">
-          {status === "halted" && (
+          {isHalted && (
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,7 +138,7 @@ export function TuringTape() {
               ✓ Halted
             </motion.div>
           )}
-          {status === "panic" && (
+          {isPanic && (
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,7 +147,7 @@ export function TuringTape() {
               ✗ Panic
             </motion.div>
           )}
-          {status === "running" && (
+          {isRunning && (
             <div className="flex gap-1 items-center">
               {[0, 1, 2].map((i) => (
                 <motion.div
@@ -146,7 +163,7 @@ export function TuringTape() {
       </div>
 
       {/* Last rule applied */}
-      {lastAppliedRule && status !== "editing" && status !== "ready" && (
+      {showRule && lastAppliedRule && (
         <motion.div
           key={stepCount}
           initial={{ opacity: 0 }}

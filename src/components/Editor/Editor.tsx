@@ -8,45 +8,19 @@ import {
   keymap,
 } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { lintGutter, setDiagnostics } from "@codemirror/lint";
-import type { Diagnostic as CmDiagnostic } from "@codemirror/lint";
 import { tmLanguage } from "./tmLanguage.ts";
 import { tmEditorTheme, tmHighlightStyle } from "./tmTheme.ts";
-import { useMachineStore } from "@/store/machine.ts";
-import type { Diagnostic } from "@/core/types.ts";
+import { useSourceStore } from "@/store/source.ts";
 
 const editableCompartment = new Compartment();
-
-function toCmDiagnostics(diagnostics: Diagnostic[], doc: EditorView["state"]["doc"]): CmDiagnostic[] {
-  const result: CmDiagnostic[] = [];
-  for (const d of diagnostics) {
-    if (d.line === undefined) continue;
-    try {
-      const line = doc.line(d.line);
-      result.push({
-        from: line.from,
-        to: line.to,
-        severity: d.severity,
-        message: d.message,
-      });
-    } catch {
-      // line out of range
-    }
-  }
-  return result;
-}
 
 export function TmEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
 
-  const source = useMachineStore((s) => s.source);
-  const diagnostics = useMachineStore((s) => s.diagnostics);
-  const setSource = useMachineStore((s) => s.setSource);
-  const compileSrc = useMachineStore((s) => s.compileSrc);
-  const status = useMachineStore((s) => s.status);
-
-  const isReadOnly = status === "running" || status === "halted" || status === "panic";
+  const source = useSourceStore((s) => s.source);
+  const readOnly = useSourceStore((s) => s.readOnly);
+  const setSource = useSourceStore((s) => s.setSource);
 
   // Mount editor once
   useEffect(() => {
@@ -64,7 +38,6 @@ export function TmEditor() {
           tmLanguage,
           tmEditorTheme,
           tmHighlightStyle,
-          lintGutter(),
           editableCompartment.of(EditorView.editable.of(true)),
           EditorView.updateListener.of((update) => {
             if (update.docChanged) {
@@ -97,22 +70,14 @@ export function TmEditor() {
     }
   }, [source]);
 
-  // Sync diagnostics
-  useEffect(() => {
-    const view = viewRef.current;
-    if (!view) return;
-    const cmDiags = toCmDiagnostics(diagnostics, view.state.doc);
-    view.dispatch(setDiagnostics(view.state, cmDiags));
-  }, [diagnostics]);
-
   // Sync readOnly via compartment
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     view.dispatch({
-      effects: editableCompartment.reconfigure(EditorView.editable.of(!isReadOnly)),
+      effects: editableCompartment.reconfigure(EditorView.editable.of(!readOnly)),
     });
-  }, [isReadOnly]);
+  }, [readOnly]);
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -120,13 +85,6 @@ export function TmEditor() {
         <span className="text-xs text-[var(--color-text-muted)] font-mono uppercase tracking-wider">
           machine.tm
         </span>
-        <button
-          onClick={compileSrc}
-          disabled={isReadOnly}
-          className="px-3 py-1 text-xs rounded bg-[var(--color-accent)] text-[var(--color-bg)] font-semibold hover:bg-[var(--color-accent-2)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          Compile
-        </button>
       </div>
       <div ref={containerRef} className="flex-1 overflow-auto min-h-0" />
     </div>
