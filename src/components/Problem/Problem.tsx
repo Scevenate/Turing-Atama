@@ -10,55 +10,55 @@ export function ProblemPanel() {
 
   if (!level) {
     return (
-      <div className="p-4 text-[var(--color-text-muted)] text-sm">
+      <div className="p-4 text-text-muted text-sm">
         Select a level to begin.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full border-b border-[var(--color-border)]">
+    <div className="flex flex-col h-full border-b border-border">
       <button
         onClick={() => setCollapsed((c) => !c)}
-        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)] uppercase tracking-wider border-b border-[var(--color-border)] bg-[var(--color-surface)] transition-colors w-full text-left"
+        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-text-muted hover:text-text border-b border-border bg-surface transition-colors w-full text-left"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
         {level.title}
       </button>
 
       {!collapsed && (
-        <div className="flex-1 overflow-y-auto p-4 prose-sm text-[var(--color-text)]">
+        <div className="flex-1 overflow-y-auto p-4 prose-sm text-text">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               h2: ({ children }) => (
-                <h2 className="text-sm font-bold text-[var(--color-accent)] mt-0 mb-2">
+                <h2 className="text-sm font-bold text-accent mt-0 mb-2">
                   {children}
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mt-3 mb-1">
+                <h3 className="text-xs font-semibold text-text-muted mt-3 mb-1">
                   {children}
                 </h3>
               ),
               p: ({ children }) => (
-                <p className="text-sm text-[var(--color-text)] mb-2 leading-relaxed">
+                <p className="text-sm text-text mb-2 leading-relaxed">
                   {children}
                 </p>
               ),
               code: ({ children }) => (
-                <code className="px-1 py-0.5 rounded text-xs bg-[var(--color-surface-2)] text-[var(--color-head)] font-mono">
+                <code className="px-1 py-0.5 rounded text-xs bg-surface-2 text-head font-mono">
                   {children}
                 </code>
               ),
               ul: ({ children }) => (
-                <ul className="text-sm text-[var(--color-text)] mb-2 pl-4 list-disc space-y-1">
+                <ul className="text-sm text-text mb-2 pl-4 list-disc space-y-1">
                   {children}
                 </ul>
               ),
               li: ({ children }) => <li className="leading-relaxed">{children}</li>,
               strong: ({ children }) => (
-                <strong className="text-[var(--color-text)] font-semibold">{children}</strong>
+                <strong className="text-text font-semibold">{children}</strong>
               ),
             }}
           >

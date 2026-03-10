@@ -27,7 +27,7 @@ export interface ControlState {
   state: "initial" | "editing" | "compiled" | "running" | "paused" | "stopped";
   stepCount: number;
   speed: number;
-  interval: ReturnType<typeof setInterval> | null;
+  timeout: ReturnType<typeof setTimeout> | null;
   lastError: Error | null;
   lastResult: StepResult | null;
   
@@ -36,9 +36,10 @@ export interface ControlState {
   step: () => boolean; //  False if not from "compiled" | "paused"
   run: () => boolean; //  False if not from "compiled" | "paused"
   pause: () => boolean; //  False if not from "running"
-  reset: () => boolean;  //  True unless "initial". Different from loadLevel, this doesn't clear source.
+  reset: () => boolean;  //  False if from "initial" | "editing". Different from loadLevel, this doesn't clear source.
   setSpeed: (speed: number) => true;
   checkResult: (level: Level, tape: Tape) => boolean;  //  True only when "stopped" and validated
+  _timeout: () => void;  //  internal timeout function for run.
 }
 
 export const useControlStore = create<ControlState>((set, get) => ({
@@ -46,13 +47,13 @@ export const useControlStore = create<ControlState>((set, get) => ({
   state: "initial",
   stepCount: 0,
   speed: 4,
-  interval: null,
+  timeout: null,
   lastError: null,
   lastResult: null,
 
   loadLevel(level) {
-    if (get().state === "running") clearInterval(get().interval ?? undefined);
-    set({ level, state: "editing", stepCount: 0, interval: null, lastResult: null, lastError: null });
+    if (get().state === "running") clearTimeout(get().timeout ?? undefined);
+    set({ level, state: "editing", stepCount: 0, timeout: null, lastResult: null, lastError: null });
     useMachineStore.setState({ machine: { tape: structuredClone(level.startTape), head: 0, state: "start", ruleTable: { rules: [], index: new Map() } } });
     useSourceStore.setState({ source: "", readOnly: false });
     return true;
@@ -84,34 +85,21 @@ export const useControlStore = create<ControlState>((set, get) => ({
 
   run() {
     if (get().state !== "compiled" && get().state !== "paused") return false;
-    set({ state: "running", interval: setInterval(() => {
-      if (get().state !== "running") {
-        clearInterval(get().interval ?? undefined);
-        set({ interval: null });
-        return;
-      }
-      const result = useMachineStore.getState().step();
-      set({ stepCount: get().stepCount + 1, lastResult: result });
-      if (result.result !== "ok") {
-        clearInterval(get().interval ?? undefined);
-        set({ interval: null, state: "stopped" });
-        return;
-      }
-    }, 1000 / get().speed) });
+    set({ state: "running", timeout: setTimeout(get()._timeout) });
     return true;
   },
 
   pause() {
     if (get().state !== "running") return false;
-    clearInterval(get().interval ?? undefined);
-    set({ interval: null, state: "paused" });
+    clearTimeout(get().timeout ?? undefined);
+    set({ timeout: null, state: "paused" });
     return true;
   },
 
   reset() {
-    if (get().state === "initial") return false;
-    if (get().state === "running") clearInterval(get().interval ?? undefined);
-    set({ state: "editing", stepCount: 0, interval: null, lastResult: null, lastError: null });
+    if (get().state === "initial" || get().state === "editing") return false;
+    if (get().state === "running") clearTimeout(get().timeout ?? undefined);
+    set({ state: "editing", stepCount: 0, timeout: null, lastResult: null, lastError: null });
     useMachineStore.setState({ machine: { tape: structuredClone(get().level?.startTape as Tape), head: 0, state: "start", ruleTable: { rules: [], index: new Map() } } });
     useSourceStore.setState({ readOnly: false });
     return true;  
@@ -125,5 +113,20 @@ export const useControlStore = create<ControlState>((set, get) => ({
   checkResult(level, tape) {
     if (get().state !== "stopped") return false;
     return level.validate(tape);
+  },
+
+  _timeout() {
+    if (get().state !== "running") {
+      set({ timeout: null });
+      return;
+    }
+    const result = useMachineStore.getState().step();
+    set({ stepCount: get().stepCount + 1, lastResult: result });
+    if (result.result === "ok") {
+      set({ timeout: setTimeout(get()._timeout, 1000 / get().speed) })
+    }
+    else {
+      set({ timeout: null, state: "stopped" });
+    }
   },
 }));

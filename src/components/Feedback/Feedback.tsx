@@ -38,16 +38,16 @@ export function Feedback() {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-3 rounded border border-[var(--color-danger)] bg-[var(--color-surface-2)]"
+        className="p-3 rounded border border-danger bg-surface-2"
       >
         <div className="flex items-center gap-2 mb-1">
-          <AlertTriangle size={14} className="text-[var(--color-danger)]" />
-          <span className="text-xs font-bold text-[var(--color-danger)]">PANIC — No rule matched</span>
+          <AlertTriangle size={14} className="text-danger" />
+          <span className="text-xs font-semibold text-danger">Panic — No rule matched</span>
         </div>
-        <p className="text-xs text-[var(--color-text-muted)]">
+        <p className="text-xs text-text-muted">
           At step {stepCount}, state{" "}
-          <code className="text-[var(--color-head)]">{panicState}</code> read{" "}
-          <code className="text-[var(--color-head)]">{panicChar ?? "null"}</code>{" "}
+          <code className="text-head">{panicState}</code> read{" "}
+          <code className="text-head">{panicChar ?? "null"}</code>{" "}
           — no rule handles this case.
         </p>
       </motion.div>
@@ -60,13 +60,13 @@ export function Feedback() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="p-3 rounded border border-[var(--color-success)] bg-[var(--color-surface-2)]"
+          className="p-3 rounded border border-success bg-surface-2"
         >
           <div className="flex items-center gap-2 mb-1">
-            <CheckCircle size={14} className="text-[var(--color-success)]" />
-            <span className="text-xs font-bold text-[var(--color-success)]">LEVEL COMPLETE!</span>
+            <CheckCircle size={14} className="text-success" />
+            <span className="text-xs font-semibold text-success">Level complete!</span>
           </div>
-          <p className="text-xs text-[var(--color-text-muted)]">
+          <p className="text-xs text-text-muted">
             The tape matches the expected output.
           </p>
         </motion.div>
@@ -77,13 +77,13 @@ export function Feedback() {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-3 rounded border border-[var(--color-danger)] bg-[var(--color-surface-2)]"
+        className="p-3 rounded border border-danger bg-surface-2"
       >
         <div className="flex items-center gap-2 mb-1">
-          <XCircle size={14} className="text-[var(--color-danger)]" />
-          <span className="text-xs font-bold text-[var(--color-danger)]">WRONG OUTPUT</span>
+          <XCircle size={14} className="text-danger" />
+          <span className="text-xs font-semibold text-danger">Wrong output</span>
         </div>
-        <p className="text-xs text-[var(--color-text-muted)]">
+        <p className="text-xs text-text-muted">
           The tape does not match the expected output.
         </p>
       </motion.div>
@@ -94,10 +94,10 @@ export function Feedback() {
   if (lastError) {
     return (
       <div
-        className="flex items-start gap-2 p-2 rounded bg-[var(--color-surface-2)] border border-[var(--color-danger)]"
+        className="flex items-start gap-2 p-2 rounded bg-surface-2 border border-danger"
       >
-        <XCircle size={12} className="text-[var(--color-danger)] mt-0.5 shrink-0" />
-        <span className="text-xs text-[var(--color-danger)] font-mono">
+        <XCircle size={12} className="text-danger mt-0.5 shrink-0" />
+        <span className="text-xs text-danger">
           {lastError.line !== undefined ? `L${lastError.line}: ` : ""}{lastError.message}
         </span>
       </div>

@@ -28,16 +28,26 @@ export function Controls() {
   const canRun = state === "editing" || state === "compiled" || state === "paused";
   const canPause = state === "running";
   const canStep = state === "editing" || state === "compiled" || state === "paused";
-  const canReset = state !== "initial";
+  const canReset = state !== "initial" && state !== "editing";
+
+  const isPanic = state === "stopped" && lastResult?.result === "panic";
+  const barBg =
+    isPanic              ? "bg-danger"
+    : state === "stopped" ? "bg-success"
+    : state === "running" ? "bg-accent"
+    : state === "paused"  ? "bg-warning"
+    : "bg-surface";
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-[var(--color-surface)]">
+    <div className={`flex items-center gap-2 px-3 py-2 transition-colors duration-300 ${barBg}`}>
       {/* Run / Pause */}
         {showRun && (
           <button
             onClick={run}
             disabled={!canRun}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-[var(--color-success)] text-[var(--color-bg)] hover:opacity-90 transition-opacity"
+            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-accent text-bg hover:opacity-90 transition-opacity",
+              !canRun && "text-text-muted cursor-not-allowed"
+            )}
           >
             <Play size={12} />
             Run
@@ -47,7 +57,9 @@ export function Controls() {
           <button
             onClick={pause}
             disabled={!canPause}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-[var(--color-warning)] text-[var(--color-bg)] hover:opacity-90 transition-opacity"
+            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-warning text-bg hover:opacity-90 transition-opacity"
+              ,!canPause && "text-text-muted cursor-not-allowed"
+            )}
           >
             <Pause size={12} />
             Pause
@@ -57,8 +69,8 @@ export function Controls() {
           onClick={step}
           disabled={!canStep}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface-2)] transition-colors",
-            !canStep && "opacity-40 cursor-not-allowed",
+            "flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-border text-text bg-surface hover:bg-surface-2 transition-colors",
+            !canStep && "text-text-muted cursor-not-allowed",
           )}
         >
           <SkipForward size={12} />
@@ -66,31 +78,32 @@ export function Controls() {
         </button>
 
 
-      {canReset && (
         <button
           onClick={reset}
           disabled={!canReset}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-2)] transition-colors"
+          className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-border bg-surface text-text hover:bg-surface-2 transition-colors",
+          !canReset && "text-text-muted cursor-not-allowed"
+          )}
         >
           <RotateCcw size={12} />
           Reset
         </button>
-      )}
 
-      <div className="h-4 w-px bg-[var(--color-border)] mx-1" />
+
+      <div className="h-4 w-px bg-border mx-1" />
 
       {/* Speed */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-[var(--color-text-muted)] hidden sm:block">Speed</span>
+        <span className="text-xs text-text hidden sm:block">Speed</span>
         <input
           type="range"
           min={1}
           max={20}
           value={speed}
           onChange={(e) => setSpeed(Number(e.target.value))}
-          className="w-20 accent-[var(--color-accent)] cursor-pointer"
+          className="w-20 accent-accent cursor-pointer"
         />
-        <span className="text-xs text-[var(--color-text-muted)] w-9 tabular-nums">
+        <span className="text-xs text-text w-9 tabular-nums">
           {speed >= 20 ? "MAX" : `${speed}×`}
         </span>
       </div>
@@ -98,7 +111,7 @@ export function Controls() {
       {/* Right side info */}
       <div className="ml-auto flex items-center gap-3">
         {stepCount > 0 && (
-          <span className="text-xs text-[var(--color-text-muted)] font-mono tabular-nums">
+          <span className="text-xs text-text-muted tabular-nums">
             {stepCount.toLocaleString()} {stepCount === 1 ? "step" : "steps"}
           </span>
         )}
@@ -110,34 +123,28 @@ export function Controls() {
 
 function StatusBadge({ state, lastResult }: { state: string; lastResult: StepResult | null }) {
   let label: string;
-  let cls: string;
 
   if (state === "stopped") {
     if (lastResult?.result === "halt") {
-      label = "HALTED";
-      cls = "text-[var(--color-success)]";
+      label = "Halted";
     } else if (lastResult?.result === "panic") {
-      label = "PANIC";
-      cls = "text-[var(--color-danger)]";
+      label = "Panic";
     } else {
-      label = "STOPPED";
-      cls = "text-[var(--color-text-muted)]";
+      label = "Stopped";
     }
   } else {
-    const map: Record<string, { label: string; cls: string }> = {
-      initial:  { label: "INITIAL",  cls: "text-[var(--color-text-muted)]" },
-      editing:  { label: "EDITING",  cls: "text-[var(--color-text-muted)]" },
-      compiled: { label: "COMPILED", cls: "text-[var(--color-accent)]" },
-      running:  { label: "RUNNING",  cls: "text-[var(--color-success)]" },
-      paused:   { label: "PAUSED",   cls: "text-[var(--color-warning)]" },
+    const map: Record<string, string> = {
+      initial:  "Ready",
+      editing:  "Editing",
+      compiled: "Compiled",
+      running:  "Running",
+      paused:   "Paused",
     };
-    const info = map[state] ?? { label: state.toUpperCase(), cls: "" };
-    label = info.label;
-    cls = info.cls;
+    label = map[state] ?? state;
   }
 
   return (
-    <span className={`text-xs font-bold font-mono tracking-wider ${cls}`}>
+    <span className="text-xs font-medium text-text">
       {label}
     </span>
   );

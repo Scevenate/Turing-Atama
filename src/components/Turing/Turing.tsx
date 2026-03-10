@@ -25,7 +25,7 @@ export function TuringTape() {
 
   if (isInitial) {
     return (
-      <div className="flex items-center justify-center h-full text-[var(--color-text-muted)] text-sm">
+      <div className="flex items-center justify-center h-full text-text-muted text-sm">
         Load a level to begin.
       </div>
     );
@@ -43,23 +43,23 @@ export function TuringTape() {
     <div className="flex flex-col items-center justify-center h-full gap-6 select-none">
       {/* State label */}
       <div className="flex items-center gap-3">
-        <span className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider">State</span>
+        <span className="text-xs text-text-muted">State</span>
         <motion.div
           key={machine.state}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className={`px-4 py-1 rounded font-mono font-bold text-sm border ${
             machine.state === "halt"
-              ? "border-[var(--color-success)] text-[var(--color-success)]"
+              ? "border-success text-success"
               : machine.state === "start"
-              ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-              : "border-[var(--color-head)] text-[var(--color-head)]"
+              ? "border-accent text-accent"
+              : "border-head text-head"
           }`}
         >
           {machine.state}
         </motion.div>
         {stepCount > 0 && (
-          <span className="text-xs text-[var(--color-text-muted)]">
+          <span className="text-xs text-text-muted">
             step {stepCount}
           </span>
         )}
@@ -68,7 +68,7 @@ export function TuringTape() {
       {/* Head arrow */}
       <div className="flex flex-col items-center">
         <div
-          className="text-[var(--color-head)] text-lg leading-none"
+          className="text-head text-lg leading-none"
           style={{ marginBottom: 2 }}
         >
           ▼
@@ -76,7 +76,7 @@ export function TuringTape() {
 
         {/* Tape cells */}
         <div
-          className="flex border border-[var(--color-border)] rounded overflow-hidden"
+          className="flex border border-border rounded overflow-hidden"
           style={{ width: VISIBLE_CELLS * CELL_WIDTH }}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -94,12 +94,12 @@ export function TuringTape() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className={`relative flex items-center justify-center font-mono text-sm font-bold border-r border-[var(--color-border)] last:border-r-0 transition-colors duration-150 ${
+                  className={`relative flex items-center justify-center font-mono text-sm font-bold border-r border-border last:border-r-0 transition-colors duration-150 ${
                     isHead
-                      ? "bg-[var(--color-head)] text-[var(--color-bg)]"
+                      ? "bg-head text-bg"
                       : char === "null"
-                      ? "bg-[var(--color-surface)] text-[var(--color-border)]"
-                      : "bg-[var(--color-surface-2)] text-[var(--color-text)]"
+                      ? "bg-surface text-border"
+                      : "bg-surface-2 text-text"
                   }`}
                   style={{ width: CELL_WIDTH, height: CELL_WIDTH }}
                 >
@@ -108,7 +108,7 @@ export function TuringTape() {
                       initial={{ scale: 2, opacity: 0.6 }}
                       animate={{ scale: 1, opacity: 0 }}
                       transition={{ duration: 0.4 }}
-                      className="absolute inset-0 bg-[var(--color-head)] rounded"
+                      className="absolute inset-0 bg-head rounded"
                     />
                   )}
                   <span className="relative z-10">
@@ -133,7 +133,7 @@ export function TuringTape() {
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-sm font-semibold text-[var(--color-success)]"
+              className="text-sm font-semibold text-success"
             >
               ✓ Halted
             </motion.div>
@@ -142,7 +142,7 @@ export function TuringTape() {
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-sm font-semibold text-[var(--color-danger)]"
+              className="text-sm font-semibold text-danger"
             >
               ✗ Panic
             </motion.div>
@@ -154,7 +154,7 @@ export function TuringTape() {
                   key={i}
                   animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ duration: 0.9, delay: i * 0.3, repeat: Infinity }}
-                  className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"
+                  className="w-1.5 h-1.5 rounded-full bg-accent"
                 />
               ))}
             </div>
@@ -168,7 +168,7 @@ export function TuringTape() {
           key={stepCount}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-xs text-[var(--color-text-muted)] font-mono px-3 py-1 bg-[var(--color-surface-2)] rounded border border-[var(--color-border)]"
+          className="text-xs text-text-muted font-mono px-3 py-1 bg-surface-2 rounded border border-border"
         >
           {lastAppliedRule.state}, {lastAppliedRule.character} →{" "}
           {lastAppliedRule.nextState}, {lastAppliedRule.nextCharacter}

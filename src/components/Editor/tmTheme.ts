@@ -5,7 +5,7 @@ import { tags } from "@lezer/highlight";
 export const tmEditorTheme = EditorView.theme(
   {
     "&": {
-      backgroundColor: "#161b22",
+      backgroundColor: "#1e1e1e",
       color: "#e6edf3",
       height: "100%",
       fontSize: "13px",
@@ -19,23 +19,23 @@ export const tmEditorTheme = EditorView.theme(
       borderLeftColor: "#58a6ff",
     },
     ".cm-activeLine": {
-      backgroundColor: "#21262d",
+      backgroundColor: "#2d2d30",
     },
     ".cm-selectionBackground, ::selection": {
       backgroundColor: "#264f78 !important",
     },
     ".cm-gutters": {
-      backgroundColor: "#161b22",
-      color: "#7d8590",
+      backgroundColor: "#1e1e1e",
+      color: "#858585",
       border: "none",
-      borderRight: "1px solid #30363d",
+      borderRight: "1px solid #3e3e42",
     },
     ".cm-lineNumbers .cm-gutterElement": {
       paddingLeft: "8px",
       paddingRight: "8px",
     },
     ".cm-activeLineGutter": {
-      backgroundColor: "#21262d",
+      backgroundColor: "#2d2d30",
     },
     ".cm-diagnostic-error": {
       borderBottom: "2px solid #f85149",

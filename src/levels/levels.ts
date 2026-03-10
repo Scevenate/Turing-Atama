@@ -21,7 +21,7 @@ export const levels: LevelGroup[] = [
       title: "What's a Turing machine?",
       description: `This is Tutorial 1.`,
       startTape: new Map([]),
-      validate: (tape: Tape) => {
+      validate: () => {
         return true;
       },
     }]}, {
