@@ -1,5 +1,25 @@
 import { create } from "zustand";
-import type { Machine, StepResult } from "@/lib/types";
+import type { Rule, Machine } from "@/lib/types.ts";
+
+export type Position = number;
+
+export interface PanicResult {
+  result: "panic";
+  panicKey: string;
+}
+
+export interface OkResult {
+  result: "ok";
+  appliedRule: Rule;
+}
+
+export interface HaltResult {
+  result: "halt";
+  appliedRule: Rule;
+}
+
+export type StepResult = PanicResult | OkResult | HaltResult;
+
 
 export interface MachineState {
   machine: Machine;

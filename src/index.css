@@ -15,9 +15,9 @@
   --color-danger: #f14c4c;
   --color-head: #dcdcaa;
 
-  --font-sans: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system,
+  --font-sans: "Segoe UI", system-ui, -apple-system,
     BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 }
 
 * {

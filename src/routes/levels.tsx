@@ -1,13 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { levels } from "@/levels/levels.ts";
-import { useLevelsStore } from "@/store/level.ts";
+import { useLevelsStore } from "@/store/level";
+import { useInitialStore } from "@/store/initial";
 import { motion } from "framer-motion";
-import { Terminal, ChevronRight, CheckCircle, Trash2 } from "lucide-react";
+import { ChevronRight, CheckCircle, Trash2 } from "lucide-react";
+import { useEffect } from "react";
 
 export default function LevelsRoute() {
+  const initial = useInitialStore((s) => s.initial);
   const navigate = useNavigate();
   const levelEntries = useLevelsStore((s) => s.levelEntries);
   const clearLevelEntries = useLevelsStore((s) => s.clearLevelEntries);
+
+  //  Root dir - nav away if initial
+  useEffect(() => {
+    if (initial) {
+      navigate("/initial");
+    }
+  }, [initial]);
 
   const allLevels = levels.flatMap((g) => g.levels);
   const totalComplete = allLevels.filter((l) => levelEntries.get(l.id)?.state === "completed").length;
@@ -15,14 +25,6 @@ export default function LevelsRoute() {
 
   return (
     <div className="min-h-screen bg-bg flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border px-8 py-5 flex items-center gap-3">
-        <Terminal size={20} className="text-accent" />
-        <span className="font-semibold text-base text-text tracking-tight">
-          Turing<span className="text-head">Atama</span>
-        </span>
-        <span className="ml-2 text-xs text-text-muted">/ select level</span>
-      </header>
 
       {/* Level grid */}
       <main className="flex-1 p-8">
@@ -30,14 +32,14 @@ export default function LevelsRoute() {
           <h1 className="text-xl font-bold text-text">Choose a Level</h1>
           <button
             onClick={clearLevelEntries}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-text-muted hover:text-danger hover:border-danger transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-text-muted hover:text-danger hover:border-danger transition-colors cursor-pointer"
           >
             <Trash2 size={11} />
             Clear Progress
           </button>
         </div>
         <p className="text-sm text-text-muted mb-8">
-          Code a Turing machine to solve each puzzle.{" "}
+          Progress: {" "}
           <span className="text-accent">
             {totalComplete}/{totalLevels}
           </span>{" "}
@@ -47,21 +49,22 @@ export default function LevelsRoute() {
         <div className="space-y-10">
           {levels.map((group) => (
             <section key={group.name}>
-              <h2 className="text-xs font-semibold text-text-muted mb-4 pb-2 border-b border-border">
+              <h2 className={`text-xs font-semibold mb-4 pb-2 border-b border-border ${
+                group.levels.filter(level => {
+                  return levelEntries.get(level.id)?.state !== "completed"
+                }).length === 0 ? "text-success" : "text-text-muted"
+              }`}>
                 {group.name}
               </h2>
               <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))" }}>
-                {group.levels.map((level, idx) => {
+                {group.levels.map((level) => {
                   const levelState = levelEntries.get(level.id)?.state;
                   const isCompleted = levelState === "completed";
                   return (
                     <motion.button
                       key={level.id}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.06 }}
                       onClick={() => navigate(`/level/${level.id}`)}
-                      className={`group text-left p-5 rounded-lg border transition-all duration-150 cursor-pointer ${
+                      className={`group text-left p-5 rounded-lg border transition-all duration-150 cursor-pointer hover:-translate-y-0.5 ${
                         isCompleted
                           ? "border-success bg-surface hover:bg-surface-2"
                           : "border-border bg-surface hover:border-accent hover:bg-surface-2"
@@ -72,7 +75,10 @@ export default function LevelsRoute() {
                           #{String(level.id).padStart(2, "0")}
                         </span>
                         {isCompleted ? (
-                          <CheckCircle size={14} className="text-success" />
+                          <div className="flex items-center align-baseline gap-1">
+                            <p className="text-text-muted text-xs pb-0.5 pr-0.5">{levelEntries.get(level.id)?.stepCount} steps</p>
+                            <CheckCircle size={14} className="text-success" />
+                          </div>
                         ) : (
                           <ChevronRight
                             size={14}
@@ -87,11 +93,6 @@ export default function LevelsRoute() {
                       }`}>
                         {level.title}
                       </h3>
-                      <div className="flex gap-2 text-xs text-text-muted">
-                        <span className="px-1.5 py-0.5 bg-surface-2 rounded font-mono">
-                          {Array.from(level.startTape.values()).join(" ")}
-                        </span>
-                      </div>
                     </motion.button>
                   );
                 })}

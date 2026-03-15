@@ -2,7 +2,7 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useControlStore } from "@/store/control.ts";
+import { useControlStore } from "@/store/control";
 
 export function ProblemPanel() {
   const level = useControlStore((s) => s.level);

@@ -1,10 +1,7 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useControlStore } from "@/store/control.ts";
-import { useMachineStore } from "@/store/machine.ts";
-import { useLevelsStore } from "@/store/level.ts";
+import { useControlStore } from "@/store/control";
+import { useMachineStore } from "@/store/machine";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
-import { useSourceStore } from "@/store/source";
 
 export function Feedback() {
   const controlState = useControlStore((s) => s.state);
@@ -14,23 +11,13 @@ export function Feedback() {
   const lastError = useControlStore((s) => s.lastError);
   const checkResult = useControlStore((s) => s.checkResult);
   const machine = useMachineStore((s) => s.machine);
-  const source = useSourceStore((s) => s.source);
-  const setLevelEntry = useLevelsStore((s) => s.setLevelEntry);
 
-  const isStopped = controlState === "stopped";
-  const isPanic = isStopped && lastResult?.result === "panic";
-  const isHalt = isStopped && lastResult?.result === "halt";
+  const isPanic = controlState === "panic";
+  const isHalt = controlState === "halted";
 
   const passed = isHalt && level != null
     ? checkResult(level, machine.tape)
     : false;
-
-  // Persist completion when the level is passed
-  useEffect(() => {
-    if (passed && level) {
-      setLevelEntry(level.id, { state: "completed", source: source });
-    }
-  }, [passed, level]);
 
   if (isPanic && lastResult?.result === "panic") {
     const [panicState, panicChar] = lastResult.panicKey.split("\0");

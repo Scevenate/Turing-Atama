@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Group, Panel, Separator } from "react-resizable-panels";
-import { levels, type Level } from "@/levels/levels.ts";
-import { useControlStore } from "@/store/control.ts";
-import { useSourceStore } from "@/store/source.ts";
-import { useLevelsStore } from "@/store/level.ts";
+import { levels } from "@/levels/levels.ts";
+import { useControlStore } from "@/store/control";
+import { useSourceStore } from "@/store/source";
+import { useLevelsStore } from "@/store/level";
+import { useMachineStore } from "@/store/machine";
 import { Controls } from "@/components/Control/Control";
 import { TmEditor } from "@/components/Editor/Editor";
 import { TuringTape } from "@/components/Turing/Turing";
@@ -15,28 +16,24 @@ import { ArrowLeft } from "lucide-react";
 export default function GameRoute() {
   //  Update id to level, navigate away if level is not found
   const { id } = useParams<{ id: string }>();
-  const [level, setLevel] = useState<Level | null>(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    const l = levels.flatMap((g) => g.levels).find((l) => l.id === Number(id)) ?? null;
-    setLevel(l);
-    if (!l) { navigate("/"); return; }
-  }, [id]);
-
-  //  load level, restore source
+  const level = useControlStore((s) => s.level);
   const loadLevel = useControlStore((s) => s.loadLevel);
   const levelEntries = useLevelsStore((s) => s.levelEntries);
+  const setSource = useSourceStore((s) => s.setSource);
   useEffect(() => {
-    if (!level) return;
-    loadLevel(level);
+    if (!id) { navigate("/"); return; }
+    const l = levels.flatMap((g) => g.levels).find((l) => l.id === Number(id)) ?? null;
+    if (!l) { navigate("/"); return; }
+    loadLevel(l);
     // Restore level source storage
-    const saved = levelEntries.get(level.id);
+    const saved = levelEntries.get(l.id);
     if (saved) setSource(saved.source);
-  }, [level]);
+    
+  }, [id]);
 
   //  Save source on write
   const source = useSourceStore((s) => s.source);
-  const setSource = useSourceStore((s) => s.setSource);
   const setLevelEntry = useLevelsStore((s) => s.setLevelEntry);
   useEffect(() => {
     if (!level) return;
@@ -44,9 +41,20 @@ export default function GameRoute() {
     if (levelEntry) {
       setLevelEntry(level.id, { ...levelEntry, source: source });
     } else {
-      setLevelEntry(level.id, { state: "attempted", source: source });
+      setLevelEntry(level.id, { state: "attempted", source: source, stepCount: 0 });
     }
   }, [source]);
+
+  // Persist completion when the level is passed
+  const checkResult = useControlStore((s) => s.checkResult);
+  const machine = useMachineStore((s) => s.machine);
+  const controlState = useControlStore((s) => s.state);
+  const stepCount = useControlStore((s) => s.stepCount);
+  useEffect(() => {
+    if (controlState === "halted" && level != null && checkResult(level, machine.tape)) {
+      setLevelEntry(level.id, { state: "completed", source: source, stepCount: stepCount });
+    }
+  }, [controlState]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-bg">
@@ -54,7 +62,7 @@ export default function GameRoute() {
       <div className="flex items-center border-b border-border shrink-0">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 px-3 py-3 text-xs text-text-muted hover:text-text border-r border-border transition-colors shrink-0"
+          className="flex items-center gap-1.5 px-3 py-3 text-xs text-text-muted hover:text-text border-r border-border transition-colors shrink-0 cursor-pointer"
         >
           <ArrowLeft size={13} />
           Levels
@@ -73,7 +81,7 @@ export default function GameRoute() {
               className="h-full flex flex-col border-r border-border overflow-hidden"
             >
               {/* Problem panel */}
-              <div className="shrink-0" style={{ maxHeight: "45%" }}>
+              <div className="shrink-0" style={{ maxHeight: "50%" }}>
                 <ProblemPanel />
               </div>
 

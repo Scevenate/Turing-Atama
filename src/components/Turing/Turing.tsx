@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useControlStore } from "@/store/control.ts";
-import { useMachineStore } from "@/store/machine.ts";
-import type { OkResult, HaltResult } from "@/lib/types";
+import { useControlStore } from "@/store/control";
+import { useMachineStore, type OkResult, type HaltResult } from "@/store/machine";
 
 const VISIBLE_CELLS = 17; // must be odd
 const HALF = Math.floor(VISIBLE_CELLS / 2);
@@ -13,8 +12,8 @@ export function TuringTape() {
   const lastResult = useControlStore((s) => s.lastResult);
   const machine = useMachineStore((s) => s.machine);
 
-  const isHalted = controlState === "stopped" && lastResult?.result === "halt";
-  const isPanic = controlState === "stopped" && lastResult?.result === "panic";
+  const isHalted = controlState === "halted";
+  const isPanic = controlState === "panic";
   const isRunning = controlState === "running";
   const isInitial = controlState === "initial";
 
@@ -43,7 +42,6 @@ export function TuringTape() {
     <div className="flex flex-col items-center justify-center h-full gap-6 select-none">
       {/* State label */}
       <div className="flex items-center gap-3">
-        <span className="text-xs text-text-muted">State</span>
         <motion.div
           key={machine.state}
           initial={{ scale: 0.8, opacity: 0 }}
@@ -58,11 +56,6 @@ export function TuringTape() {
         >
           {machine.state}
         </motion.div>
-        {stepCount > 0 && (
-          <span className="text-xs text-text-muted">
-            step {stepCount}
-          </span>
-        )}
       </div>
 
       {/* Head arrow */}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 300 200">
+    <defs>
+        <linearGradient id="mdowadnio" x1="0.3" y1="0" x2="0.7" y2="1">
+            <stop offset="0%" stop-color="#252526" />
+            <stop offset="100%" stop-color="#2d2d30" />
+        </linearGradient>
+        <radialGradient id="dnawudmw" cx="0.3" cy="0" r="1">
+            <stop offset="0%" stop-color="#252526" />
+            <stop offset="100%" stop-color="#1e1e1e" />
+        </radialGradient>
+    </defs>
+    <rect x="0" y="0" width="300" height="200" stroke="none" fill="url(#dnawudmw)" />
+    <path d="M 0 170 C 100 200 250 130 300 150 V 200 H 0 z" fill="url(#mdowadnio)"/>
+    <path d="M 0 170 C 100 200 250 130 300 150" fill="none" stroke="#3e3e42" stroke-width="0.5"/>
+</svg>

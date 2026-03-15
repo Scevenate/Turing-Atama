@@ -1,13 +1,11 @@
-import { useControlStore } from "@/store/control.ts";
+import { useControlStore } from "@/store/control";
 import { Play, Pause, SkipForward, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
-import type { StepResult } from "@/lib/types";
 
 export function Controls() {
   const state = useControlStore((s) => s.state);
   const stepCount = useControlStore((s) => s.stepCount);
   const speed = useControlStore((s) => s.speed);
-  const lastResult = useControlStore((s) => s.lastResult);
 
   const compile = useControlStore((s) => s.compile);
   const controlStep = useControlStore((s) => s.step);
@@ -30,10 +28,8 @@ export function Controls() {
   const canStep = state === "editing" || state === "compiled" || state === "paused";
   const canReset = state !== "initial" && state !== "editing";
 
-  const isPanic = state === "stopped" && lastResult?.result === "panic";
   const barBg =
-    isPanic              ? "bg-danger"
-    : state === "stopped" ? "bg-success"
+      state === "panic"   ? "bg-danger"
     : state === "running" ? "bg-accent"
     : state === "paused"  ? "bg-warning"
     : "bg-surface";
@@ -45,7 +41,7 @@ export function Controls() {
           <button
             onClick={run}
             disabled={!canRun}
-            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-accent text-bg hover:opacity-90 transition-opacity",
+            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-accent text-bg hover:opacity-90 transition-opacity cursor-pointer",
               !canRun && "text-text-muted cursor-not-allowed"
             )}
           >
@@ -57,7 +53,7 @@ export function Controls() {
           <button
             onClick={pause}
             disabled={!canPause}
-            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-warning text-bg hover:opacity-90 transition-opacity"
+            className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-warning text-bg hover:opacity-90 transition-opacity cursor-pointer"
               ,!canPause && "text-text-muted cursor-not-allowed"
             )}
           >
@@ -69,7 +65,7 @@ export function Controls() {
           onClick={step}
           disabled={!canStep}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-border text-text bg-surface hover:bg-surface-2 transition-colors",
+            "flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-border text-text bg-surface hover:bg-surface-2 transition-colors cursor-pointer",
             !canStep && "text-text-muted cursor-not-allowed",
           )}
         >
@@ -115,37 +111,10 @@ export function Controls() {
             {stepCount.toLocaleString()} {stepCount === 1 ? "step" : "steps"}
           </span>
         )}
-        <StatusBadge state={state} lastResult={lastResult} />
+        <span className="text-xs font-medium text-text-muted">
+          {state}
+        </span>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ state, lastResult }: { state: string; lastResult: StepResult | null }) {
-  let label: string;
-
-  if (state === "stopped") {
-    if (lastResult?.result === "halt") {
-      label = "Halted";
-    } else if (lastResult?.result === "panic") {
-      label = "Panic";
-    } else {
-      label = "Stopped";
-    }
-  } else {
-    const map: Record<string, string> = {
-      initial:  "Ready",
-      editing:  "Editing",
-      compiled: "Compiled",
-      running:  "Running",
-      paused:   "Paused",
-    };
-    label = map[state] ?? state;
-  }
-
-  return (
-    <span className="text-xs font-medium text-text">
-      {label}
-    </span>
   );
 }

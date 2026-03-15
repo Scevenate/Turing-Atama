@@ -1,0 +1,27 @@
+<svg width="300" height="150" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="100" width="300" height="30" fill="#1e1e1e"/>
+    <rect x="135" y="100" width="30" height="30" fill="#4ec9b0"/>
+    <line x1="0" y1="100" x2="300" y2="100" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="0" y1="130" x2="300" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="15" y1="100" x2="15" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="45" y1="100" x2="45" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="75" y1="100" x2="75" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="105" y1="100" x2="105" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="135" y1="100" x2="135" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="165" y1="100" x2="165" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="195" y1="100" x2="195" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="225" y1="100" x2="225" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="255" y1="100" x2="255" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    <line x1="285" y1="100" x2="285" y2="130" stroke="#3e3e42" stroke-width="1"/>
+    
+    <text x="56.5" y="120" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">1</text>
+    <text x="86.5" y="120" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">0</text>
+    <text x="146.5" y="120" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">1</text>
+    <text x="176.5" y="120" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">3</text>
+    <text x="205.5" y="119" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">+</text>
+    <text x="236.5" y="120" font-family="monospace" font-size="15" font-weight="lighter" fill="#cccccc">N</text>
+
+    <polygon points="100, 70 100, 20 200, 20 200, 70 150, 90" fill="#252526" stroke="#3e3e42" stroke-width="1"/>
+    <rect x="110" y="30" width="80" height="30" fill="#1e1e1e" stroke="#3e3e42" stroke-width="1"/>
+    <text x="121" y="50" font-family="monospace" font-size="15" font-weight="lighter" fill="#0078d4">rfind_N</text>
+</svg>

@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface LevelEntry {
   state: "attempted" | "completed";
   source: string;
+  stepCount: number;  //  Used only when level is completed.
 }
 
 //  localStorage wrapper

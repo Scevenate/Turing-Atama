@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import InitialRoute from "./routes/initial.tsx";
 import LevelsRoute from "./routes/levels.tsx";
 import GameRoute from "./routes/game.tsx";
 import "./index.css";
@@ -9,6 +10,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <LevelsRoute />,
+  },
+  {
+    path: "/initial",
+    element: <InitialRoute />,
   },
   {
     path: "/level/:id",

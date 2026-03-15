@@ -81,9 +81,9 @@ export function TmEditor() {
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--color-border)] bg-[var(--color-surface)] shrink-0">
-        <span className="text-xs text-[var(--color-text-muted)] font-mono uppercase tracking-wider">
-          machine.tm
+      <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-surface shrink-0">
+        <span className="text-xs text-text-muted font-mono">
+          Program
         </span>
       </div>
       <div ref={containerRef} className="flex-1 overflow-auto min-h-0" />
