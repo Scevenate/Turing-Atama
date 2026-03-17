@@ -36,7 +36,7 @@ export const useMachineStore = create<MachineState>((set, get) => ({
     const ruleIndex = get().machine.ruleTable.index.get(key);
 
     if (ruleIndex === undefined) {
-      return { result: "panic", panicKey: `(${get().machine.state}, ${currentChar})` };
+      return { result: "panic", panicKey: `${get().machine.state}\0${currentChar}` };
     }
 
     const rule = get().machine.ruleTable.rules[ruleIndex];
@@ -48,13 +48,11 @@ export const useMachineStore = create<MachineState>((set, get) => ({
 
     // Write character
     if (rule.nextCharacter !== undefined) {
-      const newTape = new Map(get().machine.tape);
       if (rule.nextCharacter === "null") {
-        newTape.delete(get().machine.head);
+        get().machine.tape.delete(get().machine.head);
       } else {
-        newTape.set(get().machine.head, rule.nextCharacter);
+        get().machine.tape.set(get().machine.head, rule.nextCharacter);
       }
-      set({ machine: { ...get().machine, tape: newTape } });
     }
 
     // Move head

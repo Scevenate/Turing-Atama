@@ -33,7 +33,7 @@ export function Feedback() {
         </div>
         <p className="text-xs text-text-muted">
           At step {stepCount}, state{" "}
-          <code className="text-head">{panicState}</code> read{" "}
+          <code className="text-head">{panicState}</code> read character {" "}
           <code className="text-head">{panicChar ?? "null"}</code>{" "}
           — no rule handles this case.
         </p>

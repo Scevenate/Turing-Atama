@@ -39,7 +39,7 @@ export function TuringTape() {
     controlState !== "compiled";
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-6 select-none">
+    <div className="flex flex-col items-center justify-center h-full gap-6 select-none overflow-hidden">
       {/* State label */}
       <div className="flex items-center gap-3">
         <motion.div
@@ -69,7 +69,7 @@ export function TuringTape() {
 
         {/* Tape cells */}
         <div
-          className="flex border border-border rounded overflow-hidden"
+          className="relative flex border border-border rounded overflow-hidden"
           style={{ width: VISIBLE_CELLS * CELL_WIDTH }}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -128,7 +128,7 @@ export function TuringTape() {
               animate={{ opacity: 1, y: 0 }}
               className="text-sm font-semibold text-success"
             >
-              ✓ Halted
+              Halted
             </motion.div>
           )}
           {isPanic && (
@@ -137,7 +137,7 @@ export function TuringTape() {
               animate={{ opacity: 1, y: 0 }}
               className="text-sm font-semibold text-danger"
             >
-              ✗ Panic
+              Panic!
             </motion.div>
           )}
           {isRunning && (
@@ -164,8 +164,7 @@ export function TuringTape() {
           className="text-xs text-text-muted font-mono px-3 py-1 bg-surface-2 rounded border border-border"
         >
           {lastAppliedRule.state}, {lastAppliedRule.character} →{" "}
-          {lastAppliedRule.nextState}, {lastAppliedRule.nextCharacter}
-          {lastAppliedRule.move && ` [${lastAppliedRule.move === "<" ? "←" : "→"}]`}
+          {lastAppliedRule.nextState}, {lastAppliedRule.nextCharacter}, {lastAppliedRule.move}
         </motion.div>
       )}
     </div>

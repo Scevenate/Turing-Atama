@@ -2,7 +2,7 @@ import MachineBGSVG from "@/assets/machine-bg.svg";
 import TuringMachineSVG from "@/assets/Turing-machine.svg";
 import TuringMachine2SVG from "@/assets/Turing-machine-2.svg";
 import TuringMachine3SVG from "@/assets/Turing-machine-3.svg";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpenText } from "lucide-react";
 import { useInitialStore } from "@/store/initial";
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +12,15 @@ export function Machine() {
   return (
     <>
       <img src={MachineBGSVG} alt="" className="fixed w-screen h-screen top-0 left-0 "></img>
-      <div className="fixed w-screen h-screen flex flex-row justify-center overflow-scroll">
-        <div className="flex flex-col items-center h-min md:w-2/3 md:p-20 p-10 md:border-x md:border-border mx-auto bg-bg">
+      <div className="fixed w-screen h-screen flex flex-row justify-center overflow-scroll bg-transparent">
+        <div className="flex flex-col items-center h-min md:w-2/3 md:px-20 p-10 md:border-x-2 md:border-border mx-auto bg-[rgba(30,30,30,0.8)]">
           <div className="w-full">
-            <div className="border border-[#6e6] rounded-xl bg-surface text-text py-1 px-2 w-max">Tutorial</div>
-            <h1 className="text-4xl my-10 text-left md:pl-10 font-semibold">So, what's a Turing machine?</h1>  
+            <div className="bg-surface border-border py-2 px-3 rounded-xl border w-max">
+              <BookOpenText strokeWidth={1.5} color="#6e6" className="inline -translate-y-0.5" />
+              <p className="inline text-text ml-2 text-xl">Tutorial</p>
+            </div>
           </div>
+          <h1 className="text-5xl my-10 text-left w-full font-semibold">So, what's a <em>Turing machine</em>?</h1>  
           
           <img src={TuringMachineSVG} alt="Turing machine" className="w-full" />
           
@@ -42,7 +45,7 @@ export function Machine() {
           <img src={TuringMachine3SVG} alt="Turing machine" className="w-full" />
           <p className="text-left w-full text-xl my-5">Then the Turing machine just repeats. The Turing machine now queries the program what to do when the state is rfind_N and the character is 3, and so on.</p>
           <p className="text-left w-full text-xl my-5">And that's a Turing machine. You might still have some questions, but the best way to learn is to do. Thankfully, what you've just learned is enough to get your hands a little dirty!</p>
-          <button className="my-5 flex flex-row items-center bg-accent border border-border rounded-2xl p-2 shadow shadow-black hover:-translate-y-0.5 hover:bg-accent-2 transition-transform cursor-pointer" onClick={() => { setInitial(); navigate('/level/0'); }}><p className="text-xl px-1 text-text">Continue</p> <ArrowRight className="w-5"></ArrowRight></button>
+          <button className="my-5 flex flex-row items-center bg-accent border border-border rounded-xl p-2 shadow shadow-black hover:-translate-y-0.5 hover:bg-accent-2 transition-transform cursor-pointer" onClick={() => { setInitial(); navigate('/level/1'); }}><p className="text-xl px-1 text-text">Continue</p> <ArrowRight className="w-5"></ArrowRight></button>
         </div>
       </div>
     </>

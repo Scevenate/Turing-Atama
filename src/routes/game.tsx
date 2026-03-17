@@ -11,7 +11,6 @@ import { TmEditor } from "@/components/Editor/Editor";
 import { TuringTape } from "@/components/Turing/Turing";
 import { ProblemPanel } from "@/components/Problem/Problem";
 import { Feedback } from "@/components/Feedback/Feedback";
-import { ArrowLeft } from "lucide-react";
 
 export default function GameRoute() {
   //  Update id to level, navigate away if level is not found
@@ -57,23 +56,14 @@ export default function GameRoute() {
   }, [controlState]);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-bg">
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-bg">
       {/* Top controls bar */}
-      <div className="flex items-center border-b border-border shrink-0">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 px-3 py-3 text-xs text-text-muted hover:text-text border-r border-border transition-colors shrink-0 cursor-pointer"
-        >
-          <ArrowLeft size={13} />
-          Levels
-        </button>
-        <div className="flex-1 min-w-0">
-          <Controls/>
-        </div>
+      <div className="flex items-center border-b border-border shrink-0 w-full">
+        <Controls/>
       </div>
 
       {/* Main split layout */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden w-full">
         <Group orientation="horizontal" className="h-full">
           {/* Left pane: problem + editor */}
           <Panel id="left" defaultSize={40} minSize={25}>
@@ -104,7 +94,7 @@ export default function GameRoute() {
 
           {/* Right pane: tape visualizer */}
           <Panel id="right" defaultSize={60} minSize={40}>
-            <div className="h-full bg-bg">
+            <div className="h-full bg-bg overflow-hidden">
               <TuringTape />
             </div>
           </Panel>

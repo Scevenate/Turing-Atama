@@ -1,8 +1,10 @@
 import { useControlStore } from "@/store/control";
-import { Play, Pause, SkipForward, RotateCcw } from "lucide-react";
+import { Play, Pause, SkipForward, RotateCcw, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
+import { useNavigate } from "react-router-dom";
 
 export function Controls() {
+  const navigate = useNavigate();
   const state = useControlStore((s) => s.state);
   const stepCount = useControlStore((s) => s.stepCount);
   const speed = useControlStore((s) => s.speed);
@@ -35,7 +37,14 @@ export function Controls() {
     : "bg-surface";
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-2 transition-colors duration-300 ${barBg}`}>
+    <div className={`flex items-center gap-2 px-3 py-2 transition-colors duration-300 w-full ${barBg}`}>
+      <button
+          onClick={() => navigate("/")}
+          className="text-text-muted hover:text-text border-r border-border transition-colors cursor-pointer pb-1"
+        >
+        <ArrowLeft size={13} className="inline"/>
+        <p className="inline text-xs p-1 mr-2">Levels</p>
+      </button>
       {/* Run / Pause */}
         {showRun && (
           <button
