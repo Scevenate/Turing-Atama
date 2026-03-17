@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     path: "/level/:id",
     element: <GameRoute />,
   },
-]);
+], { basename: "/Turing-Atama" });
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element not found");

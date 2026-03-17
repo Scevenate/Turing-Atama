@@ -11,7 +11,7 @@ interface LevelEntry {
 const LOCAL_STORAGE_KEY = "LevelEntries";
 
 function getStorage(): Map<number, LevelEntry> {
-  return new Map(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]"));
+  return new Map(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]") as [number, LevelEntry][]);
 }
 
 function setStorage(entries: Map<number, LevelEntry>): void {

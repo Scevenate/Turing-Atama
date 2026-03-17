@@ -15,7 +15,7 @@ export default function LevelsRoute() {
   //  Root dir - nav away if initial
   useEffect(() => {
     if (initial) {
-      navigate("/initial");
+      void navigate("/initial");
     }
   }, [initial]);
 
@@ -29,7 +29,7 @@ export default function LevelsRoute() {
       {/* Level grid */}
       <main className="flex-1 p-8">
         <div className="flex items-end justify-between mb-1">
-          <h1 className="text-xl font-bold text-text">Choose a Level</h1>
+          <h1 className="text-2xl font-bold text-accent"><span className="">T</span><span className="relative top-1">u</span><span className="relative bottom-1.5">r</span><span className="relative bottom-0.5">i</span><span className="relative top-0.5">n</span>g Atama<span className="text-text-muted italic text-3xl relative top-0.5 pl-0.5">!!!</span></h1>
           <button
             onClick={clearLevelEntries}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-text-muted hover:text-danger hover:border-danger transition-colors cursor-pointer"
@@ -40,10 +40,10 @@ export default function LevelsRoute() {
         </div>
         <p className="text-sm text-text-muted mb-8">
           Progress: {" "}
-          <span className="text-accent">
+          <span className="text-accent-2">
             {totalComplete}/{totalLevels}
           </span>{" "}
-          complete.
+          completed
         </p>
 
         <div className="space-y-10">
@@ -63,7 +63,7 @@ export default function LevelsRoute() {
                   return (
                     <motion.button
                       key={level.id}
-                      onClick={() => navigate(`/level/${level.id}`)}
+                      onClick={() => void navigate(`/level/${level.id}`)}
                       className={`group text-left p-5 rounded-lg border transition-all duration-150 cursor-pointer hover:-translate-y-0.5 ${
                         isCompleted
                           ? "border-success bg-surface hover:bg-surface-2"
@@ -101,6 +101,10 @@ export default function LevelsRoute() {
           ))}
         </div>
       </main>
+      <div className="flex flex-col my-5 items-center justify-center text-xs text-text-muted">
+        <p>(c) Scevenate, 2026. Made with love!</p>
+        <p>Contact: <a className="text-accent hover:text-accent-2 underline" href="mailto://scevenate@gmail.com">Scevenate@gmail.com</a> for anything UwU</p>
+      </div>
     </div>
   );
 }

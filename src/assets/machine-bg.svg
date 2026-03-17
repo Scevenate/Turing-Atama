@@ -6,10 +6,16 @@
         </radialGradient>
     </defs>
     <rect x="0" y="0" width="300" height="200" stroke="none" fill="url(#dnawudmw)" />
-    <line x1="0" y1="142" x2="300" y2="195" stroke="#3e3e42" stroke-width="0.5"/>
-    <line x1="0" y1="150" x2="300" y2="170" stroke="#3e3e42" stroke-width="0.5"/>
-    <line x1="0" y1="160" x2="300" y2="140" stroke="#3e3e42" stroke-width="0.5"/>
-    <line x1="0" y1="175" x2="300" y2="100" stroke="#3e3e42" stroke-width="0.5"/>
-    <line x1="0" y1="195" x2="300" y2="50" stroke="#3e3e42" stroke-width="0.5"/>
-    <line x1="0" y1="220" x2="300" y2="-10" stroke="#3e3e42" stroke-width="0.5"/>
+    <line x1="0" y1="142" x2="300" y2="195" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="150" x2="300" y2="170" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="160" x2="300" y2="140" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="175" x2="300" y2="100" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="195" x2="300" y2="50" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="220" x2="300" y2="-10" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="63" x2="300" y2="-100" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="50" x2="300" y2="-40" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="40" x2="300" y2="0" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="32" x2="300" y2="20" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="21" x2="300" y2="40" stroke="#3e3e42" stroke-width="0.3"/>
+    <line x1="0" y1="8" x2="300" y2="58" stroke="#3e3e42" stroke-width="0.3"/>
 </svg>

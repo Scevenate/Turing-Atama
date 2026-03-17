@@ -7,7 +7,7 @@ export function Initial({ setMode }: { setMode: (mode: "Turing machine") => void
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-4 bg-bg w-max mx-auto">
-      <h1 className="text-3xl mb-4">Which best describes you?</h1>
+      <h1 className="text-3xl mb-4 font-semibold">Yeah, I mean...</h1>
       <button className="bg-surface hover:bg-surface-2 text-text border border-border px-4 py-2 rounded-md w-full cursor-pointer hover:-translate-y-0.5 transition-all" onClick={() => setMode("Turing machine")}>
         <BookOpenText strokeWidth={1.5} color="#6e6" className="w-10 h-10 mt-1.5 mb-2 mr-4 float-left" />
         <div className="flex flex-col">
@@ -15,20 +15,21 @@ export function Initial({ setMode }: { setMode: (mode: "Turing machine") => void
           <p className="text-sm text-text-muted text-left">Learn about Turing machine and how it works. Full tutorial.</p>
         </div>
       </button>
-      <button className="bg-surface hover:bg-surface-2 text-text border border-border px-4 py-2 rounded-md w-full cursor-pointer hover:-translate-y-0.5 transition-all" onClick={() => { setInitial(); navigate("/level/1"); }}>
+      <button className="bg-surface hover:bg-surface-2 text-text border border-border px-4 py-2 rounded-md w-full cursor-pointer hover:-translate-y-0.5 transition-all" onClick={() => { setInitial(); void navigate("/level/1"); }}>
         <ScrollText strokeWidth={1.5} color="#ee6" className="w-10 h-10 mt-1.5 mb-2 mr-4 float-left" />
         <div className="flex flex-col">
           <h3 className="text-lg font-semibold text-left">How do I script?</h3>
           <p className="text-sm text-text-muted text-left">Learn about Turing atama scripting. Minimal tutorial.</p>
         </div>
       </button>
-      <button className="bg-surface hover:bg-surface-2 text-text border border-border px-4 py-2 rounded-md w-full cursor-pointer hover:-translate-y-0.5 transition-all" onClick={() => { setInitial(); navigate("/")}}>
+      <button className="bg-surface hover:bg-surface-2 text-text border border-border px-4 py-2 rounded-md w-full cursor-pointer hover:-translate-y-0.5 transition-all" onClick={() => { setInitial(); void navigate("/"); }}>
         <MessageCircleX strokeWidth={1.5} color="#e66" className="w-10 h-10 mt-1.5 mb-2 mr-4 float-left" />
         <div className="flex flex-col">
           <h3 className="text-lg font-semibold text-left">Shut up.</h3>
           <p className="text-sm text-text-muted text-left">I know how it works.</p>
         </div>
       </button>
+      <p className="absolute bottom-5 text-text-muted text-xs">This is a static service built for common good. It does not collect any data.</p>
     </div>
   );
 }

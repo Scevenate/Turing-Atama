@@ -21,9 +21,9 @@ export default function GameRoute() {
   const levelEntries = useLevelsStore((s) => s.levelEntries);
   const setSource = useSourceStore((s) => s.setSource);
   useEffect(() => {
-    if (!id) { navigate("/"); return; }
+    if (!id) { void navigate("/"); return; }
     const l = levels.flatMap((g) => g.levels).find((l) => l.id === Number(id)) ?? null;
-    if (!l) { navigate("/"); return; }
+    if (!l) { void navigate("/"); return; }
     loadLevel(l);
     // Restore level source storage
     const saved = levelEntries.get(l.id);

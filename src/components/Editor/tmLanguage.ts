@@ -80,7 +80,8 @@ export const tmLanguage = StreamLanguage.define<State>({
     return "invalid";
   },
 
-  blankLine(_state: State) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  blankLine(_: State) {
     // no-op (state reset is per-line automatic in StreamLanguage)
   },
 

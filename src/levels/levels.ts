@@ -29,7 +29,7 @@ In this level, the cells 1 to n is filled with character \`1\`. Your job is to e
 
 Now consider what should we instruct the Turing machine. First, the machine starts with state \`start\` and character \`base\`, so we need to address that.
 
-Do we need to update the state? No, we just want the machine to move right consequtively.
+Do we need to update the state? No, we just want the machine to move right consecutively.
 
 Do we need to update the character? No, we want to keep the current character as is.
 
@@ -57,7 +57,7 @@ Thirdly, sure we want to go back! Therefore, we add another rule:
 
 This will tell the machine go back, and we're now at the last \`1\`, at state \`1-clear_Des\`, it's finally coming to an end!
 
-We want the machine to halt after this clearing step, therefore we'll let the machine transit into the resevred state \`halt\`.
+We want the machine to halt after this clearing step, therefore we'll let the machine transit into the reserved state \`halt\`.
 
 We surely want to write this character, to clear it. We write this character to the special reserved character \`null\`, which is empty.
 
@@ -119,7 +119,7 @@ Yes, it is possible to get a little cheesy on this. Sure you can! There's nothin
 
 In this level, cells 1 to 2n+1 are filled with 1. You need to find the middle 1 and write it to 2. You may change the rest of the tape as you wish.
 
-It is clear that this cannot be done in single pass. In this problem, we'll design a subroutine that, given an array of 1s, trims the first and last 1. By calling this subroutine iteratively, we can find the final 1 in this middle.
+It is clear that this cannot be done in single pass (or put more formally, it is beyond the capabilities of a plain finite state machine). In this problem, we'll design a subroutine that, given an array of 1s, trims the first and last 1. By calling this subroutine iteratively, we can find the final 1 in this middle.
 
 To formally design a subroutine, the following three things must be specified:
 
@@ -173,7 +173,7 @@ But hold on! We need to stop when there's only one \`1\` left. So we change the 
 
 This clears the stage!
 
-As you'll see in future chapters, it is generally not a good idea to spam your tape with \`base\` and \`brk\`. But for demostration purpose we chose this approach to simplify implementation.
+As you'll see in future chapters, it is generally not a good idea to spam your tape with \`base\` and \`brk\`. But for demonstration purpose we chose this approach to simplify implementation.
 
 One last note: everything in the line after a hashtag \`#\` is ignored (which is already shown above). Maybe comment your code!
 `,
@@ -186,13 +186,13 @@ One last note: everything in the line after a hashtag \`#\` is ignored (which is
       title: "Find mode",
       description: `The cells [0, 2n+1] are filled with 1s and 0s. Please find the mode and store it to cell -1.
       
-You should update \`sp\` to position -2, and cell 0 and n+1 must remain \`base\` and \`brk\`. You may edit the rest of the take as you wish.`,
+You should update \`sp\` to position -2, and cell 0 and n+1 must remain \`base\` and \`brk\`. You may edit the rest of the tape as you wish.`,
       startTape: new Map([[-1, "sp"], [0, "base"], [1, "0"], [2, "1"], [3, "1"], [4, "0"], [5, "0"], [6, "0"], [7, "0"], [8, "1"], [9, "0"], [10, "0"], [11, "1"], [12, "0"], [13, "1"], [14, "1"], [15, "1"], [16, "brk"]]),
       validate: (tape: Tape) => {
         if (tape.get(-2) !== "sp") return false;
         if (tape.get(-1) !== "0") return false;
         if (tape.get(0) !== "base") return false;
-        if (tape.get(20) !== "brk") return false;
+        if (tape.get(16) !== "brk") return false;
         return true;
       },
     }, {
@@ -272,9 +272,9 @@ An implementation:
 
 \`setup-move4, 1: ,, <\`
 
-\`setup-move4, sp: setup-move5,, >\`
+\`setup-move4, sp: setup-move5, 1, >\`
 
-\`setup-move4, null: setup-move5,, >\`
+\`setup-move4, null: setup-move5, 1, >\`
 
 \`setup-move5, 1: ,, >\`
 
@@ -394,7 +394,7 @@ You must keep cell 0 \`base\`, and write cell n!+1 \`brk\`. You may edit the res
       title: "Welcome: Factorial",
       description: `So far, we've utilized the negative side of the tape as a global storage. But sometimes we might want a subroutine to operate with its own state storage. This is when function comes in.
 
-A function is a subroutine that, with the help of the follwing extra restrictions, operates its own state storage:
+A function is a subroutine that, with the help of the following extra restrictions, operates its own state storage:
 
 1. When called, relative to its calling cell, cell -1 is always \`sp\`, cell 0 is always \`base_ret-state\`. The data \`base\` and \`brk\` is somewhere on the right.
 
@@ -402,7 +402,7 @@ A function is a subroutine that, with the help of the follwing extra restriction
 
 3. When return, \`func-halt\` should halt on its base \`base_ret-state\`. State \`func-halt\`, character \`base_ret-state\` should transit to state \`ret-state\` and write \`sp\`.
 
-This might seems overwhelming at first, but the systematic approach empowers us to conquer problems of even bigger scale with clarity. In this level, we'll rewrite the previous iterative factorial to recursive functional approach for demostration. Cells [1, n] are filled with \`1\`. Your job is to fill cells [1, n!] with \`1\`.
+This might seem overwhelming at first, but the systematic approach empowers us to conquer problems of even bigger scale with clarity. In this level, we'll rewrite the previous iterative factorial to recursive functional approach for demonstration. Cells [1, n] are filled with \`1\`. Your job is to fill cells [1, n!] with \`1\`.
 
 We need to design the function that:
 

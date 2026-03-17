@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useControlStore } from "@/store/control";
-import { useMachineStore, type OkResult, type HaltResult } from "@/store/machine";
+import { useMachineStore } from "@/store/machine";
 
 const VISIBLE_CELLS = 17; // must be odd
 const HALF = Math.floor(VISIBLE_CELLS / 2);
@@ -19,7 +19,7 @@ export function TuringTape() {
 
   const lastAppliedRule =
     lastResult?.result === "ok" || lastResult?.result === "halt"
-      ? (lastResult as OkResult | HaltResult).appliedRule
+      ? lastResult.appliedRule
       : null;
 
   if (isInitial) {

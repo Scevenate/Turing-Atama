@@ -221,9 +221,9 @@ export function compile(source: string): RuleTable | Error {
     const tokenResult = tokenizeLine(sourceLine, line);
     if ("name" in tokenResult) return tokenResult;
 
-    const ruleResult = parseLine(tokenResult as Token[], line);
+    const ruleResult = parseLine(tokenResult, line);
     if ("name" in ruleResult) return ruleResult;
-    rules.push(ruleResult as Rule);
+    rules.push(ruleResult);
   }
 
   return analyze(rules);

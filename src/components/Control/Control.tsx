@@ -39,7 +39,7 @@ export function Controls() {
   return (
     <div className={`flex items-center gap-2 px-3 py-2 transition-colors duration-300 w-full ${barBg}`}>
       <button
-          onClick={() => navigate("/")}
+          onClick={() => void navigate("/")}
           className="text-text-muted hover:text-text border-r border-border transition-colors cursor-pointer pb-1"
         >
         <ArrowLeft size={13} className="inline"/>
