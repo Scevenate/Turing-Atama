@@ -612,7 +612,7 @@ n > m. Cell 0 must remain \`base\`, cell n+m+2 must be \`brk\`.`,
       }
     }, {
       id: 12,
-      title: "Turing Atama Interpretor",
+      title: "Universal Turing machine",
       description: `In this level, you'll emulate a Turing atama interpretor.
 
 For your convenience, the rule table is preloaded on the left of the tape. All states and characters are 1-arrays.
